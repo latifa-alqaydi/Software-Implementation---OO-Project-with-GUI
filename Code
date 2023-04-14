@@ -1,0 +1,154 @@
+class Appointment:
+    def __init__(self, date, time, services):
+        # Constructor for the Appointment class, which initializes the
+        # appointment's date, time, and list of services.
+        self.date = date
+        self.time = time
+        self.services = services
+
+class DentalBranch:
+    def __init__(self, address, phone, manager):
+        # Constructor for the DentalBranch class, which initializes the
+        # branch's address, phone number, manager, and list of services.
+        self.address = address
+        self.phone = phone
+        self.manager = manager
+        self.services = []
+
+    def add_service(self, service):
+        # Adds a new service to the list of services provided by the branch.
+        self.services.append(service)
+
+    def remove_service(self, service):
+        # Removes a service from the list of services provided by the branch.
+        self.services.remove(service)
+
+    def book_appointment(self, patient, date, time, services):
+        # Creates a new appointment object and adds it to the patient's list
+        # of appointments.
+        appointment = Appointment(date, time, services)
+        patient.add_appointment(appointment)
+
+
+class Staff:
+    def __init__(self, name, salary):
+        # Constructor for the Staff class, which initializes the staff member's
+        # name and salary.
+        self.name = name
+        self.salary = salary
+
+
+class Manager(Staff):
+    def __init__(self, name, salary):
+        # Constructor for the Manager class, which initializes the manager's
+        # name, salary, and list of staff members.
+        super().__init__(name, salary)
+        self.staff = []
+
+    def add_staff(self, staff_member):
+        # Adds a new staff member to the manager's list of staff members.
+        self.staff.append(staff_member)
+
+    def remove_staff(self, staff_member):
+        # Removes a staff member from the manager's list of staff members.
+        self.staff.remove(staff_member)
+
+
+class Receptionist(Staff):
+    def __init__(self, name, salary):
+        # Constructor for the Receptionist class, which initializes the
+        # receptionist's name, salary, and position.
+        super().__init__(name, salary)
+        self.position = "Receptionist"
+
+
+class Hygienist(Staff):
+    def __init__(self, name, salary):
+        # Constructor for the Hygienist class, which initializes the hygienist's
+        # name, salary, and position.
+        super().__init__(name, salary)
+        self.position = "Hygienist"
+
+
+class Dentist(Staff):
+    def __init__(self, name, salary):
+        # Constructor for the Dentist class, which initializes the dentist's
+        # name, salary, and position.
+        super().__init__(name, salary)
+        self.position = "Dentist"
+
+
+class Patient:
+    def __init__(self, name):
+        # Constructor for the Patient class, which initializes the patient's
+        # name, list of appointments, and total cost of all appointments.
+        self.name = name
+        self.appointments = []
+        self.total_cost = 0
+
+    def add_appointment(self, appointment):
+        # Adds a new appointment to the patient's list of appointments.
+        self.appointments.append(appointment)
+
+    def get_appointments(self):
+        # Returns a list of the patient's appointments.
+        return self.appointments
+
+    def checkout(self):
+        # Calculates the total cost of all the patient's appointments, adds
+        # VAT, and sets the patient's total cost attribute to the final amount.
+        total = 0
+        for appointment in self.appointments:
+            for service in appointment.services:
+                total += service.cost
+        total += total * 0.05 # Add VAT
+        self.total_cost = total
+
+
+class Service:
+    def __init__(self, name, cost):
+        # Constructor for the Service class
+        self.name = name  # The name of the service
+        self.cost = cost  # The cost of the service
+
+############## a
+# Create a new DentalBranch with a Manager
+manager = Manager("Steve", 50000)
+branch = DentalBranch("1 St", "0551234567", manager)
+# Add the branch to the company's list of branches
+company_branches = [branch]
+# Create another DentalBranch with a Manager
+manager2 = Manager("Latifa", 55500)
+branch2 = DentalBranch("2 St", "0558850188", manager2)
+# Add the second branch to the company's list of branches
+company_branches.append(branch2)
+
+############ b 
+# Create a new Service
+cleaning = Service("Cleaning", 50 )
+# Add the Service to the first branch
+branch.add_service(cleaning)
+# Create a new Dentist and Hygienist
+dentist = Dentist("Dr. Mohammed", 10000)
+hygienist = Hygienist("Dr. Fahad", 8000)
+# Add the Dentist and Hygienist to the first branch's Manager's staff list
+manager.add_staff(dentist)
+manager.add_staff(hygienist)
+# Create a new Patient and add them to the first branch
+patient = Patient("Hoor")
+branch.book_appointment(patient, "2023-04-10", "10:00", [cleaning])
+
+########### c
+# Create a new Patient and add them to the first branch
+patient2 = Patient("Sara")
+branch.book_appointment(patient2, "2023-04-10", "11:00", [cleaning])
+
+########### d
+# Check out the first Patient and print their total cost
+patient.checkout()
+print("Patient:", patient.name)
+for appointment in patient.get_appointments():
+    print("Appointment:", appointment.date, appointment.time)
+    for service in appointment.services:
+        print("Service:", service.name, "Cost:", service.cost)
+print("Total Cost:", patient.total_cost)
